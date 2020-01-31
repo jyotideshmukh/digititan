@@ -6,7 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\user\Entity\User;
-
+use Drupal\file\Entity\File;
 
 /**
  * Class TeamForm.
@@ -40,15 +40,7 @@ class TeamForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $event_id = 0) {
-    $user_data = User::loadMultiple([1]);
-    foreach($user_data as $user) {
-      print_r($user->id());
-      print_r($user->name);
-    }
-    die;
-// print_r(User::loadMultiple([1]));
 
-    $event_id = 1;
     $hackathon_file = \Drupal::config('hackathon_event.file');
     $max_file_size = $hackathon_file->get('max_file_size');
     // public function buildForm(array $form, FormStateInterface $form_state, $event_id = null) {
@@ -88,41 +80,16 @@ class TeamForm extends FormBase {
     ];
     $form['leader_uid'] = [
       '#type' => 'textfield',
-      '#title' => t('Name of the referenced node'),
-      '#autocomplete_route_name' => 'mymodule.autocomplete',
-      '#description' => t('Node Add/Edit type block'),
-      '#default' => ($form_state->isValueEmpty('nid')) ? null : ($form_state->getValue('nid')),
-      '#required' => true,
-      '#type' => 'entity_autocomplete',
-      '#target_type' => 'user',
-      // '#default_value' => $owner->isAnonymous() ? NULL : $owner,
-      // A comment can be made anonymous by leaving this field empty therefore
-      // there is no need to list them in the autocomplete.
-      '#selection_settings' => [
-        'include_anonymous' => FALSE,
-      ],
       '#title' => $this->t('Leader Name'),
+      '#attributes' => ['class' => ['MYCUSTOM-autocomplete'],],
+      '#autocomplete_route_name' => 'hackathon_event.user_autocomplete',
       '#description' => $this->t('Please add leader name'),
+      '#required' => true,
     ];
-    $no_members = [
-      1 => 1,
-      2 => 2,
-      3 => 3,
-      4 => 4,
-      5 => 5,
-    ];
-    if (!empty($form_state->getValue('member_count'))) {
-       // Get the value if it already exists.
-       $members = $form_state->getValue('member_count');
-    }
-    else {
-     // Use a default value.
-     $members = 1;
-    }
-    \Drupal::logger("priyanka")->error($members);
+    $no_members = [0, 1=>1, 2=>2, 3=>3, 4=>4, 5=>5];
     $form['members_count'] = [
       '#type' => 'select',
-      '#title' => $this->t('How many members you wanted to add in team?'),
+      '#title' => $this->t('Add Memebers'),
       '#options' => $no_members,
       '#ajax' => [
         'callback' => '::addMemberCallback',
@@ -134,7 +101,12 @@ class TeamForm extends FormBase {
       '#type' => 'container',
       '#attributes' => ['id' => 'member-fieldset-wrapper'],
     ];
-    for ($i=0; $i < $members; $i++) {
+    if ($form_state->hasValue('members_count')) {
+      $members = $form_state->getValue('members_count');
+    } else {
+      $members = 0;
+    }
+    for ($i=1; $i <= $members; $i++) {
       $form['member_fieldset']["member$i"] = [
         '#type' => 'entity_autocomplete',
       '#target_type' => 'user',
@@ -174,10 +146,56 @@ class TeamForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Display result.
-    foreach ($form_state->getValues() as $key => $value) {
-      $this->messenger->addMessage($key . ': ' . ($key === 'text_format'?$value['value']:$value));
+
+    $logo_file = File::load( $form_state->getValue('logo_file')[0] );
+    $logo_file->setPermanent();
+    $logo_file->save();
+
+    $text = $form_state->getValue('leader_uid');
+    preg_match('#\((.*?)\)#', $text, $match);
+    $leader_uid = $match[1];
+
+    $fields = [
+      'name' => $form_state->getValue('name'),
+      'event_id' => $form_state->getValue('event_id'),
+      'logo_file' => $form_state->getValue('logo_file')[0],
+      'platform_account' => $form_state->getValue('platform_account'),
+      'platform_repository' => $form_state->getValue('platform_repository'),
+      'leader_uid' => $leader_uid,
+      'status' => 1,
+      'created' => time(),
+      'created_by' => \Drupal::currentUser()->id(),
+    ];
+    
+    try {
+      $team_id = \Drupal::database()->insert('hackathon_team')
+      ->fields($fields)
+      ->execute();
+      $team_uids[] = [
+        'team_id' => $team_id,
+        'uid' => $leader_uid
+      ];
+      $members_count = $form_state->getValue('members_count');
+      for ($i=0;$i<$members_count;$i++) {
+        $user_data = $form_state->getValue("member$i");
+        preg_match('#\((.*?)\)#', $user_data, $match);
+        $team_uids[] = [
+          'team_id' => $team_id,
+          'uid' => $match[1]
+        ];
+      }
+      $query = \Drupal::database()->insert('hackathon_team_user')->fields(['team_id', 'uid']);
+      foreach ($team_uids as $team_uid) {
+        $query->values($team_uid);
+      }
+      $query->execute();
+    } catch (\Exception $e) {
+      \Drupal::logger("hackathon_event")->error("Team Insert: ".$e->getMessage());
+      $form_state->setRedirect('<front>');
     }
+      $service = \Drupal::service('gittest.Gitservices');
+      $service->createRepo($teamname);
+      drupal_set_message($this->t("Team added successfully."));
   }
 
 }

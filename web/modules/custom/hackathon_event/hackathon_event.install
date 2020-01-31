@@ -210,8 +210,8 @@ function hackathon_event_schema() {
             'not null' => TRUE,
             'default' => 0,
         ],
-  ],
-  'unique keys' => [
+      ],
+    'unique keys' => [
     'team_user' => [
         'team_id', 'uid'
     ]
@@ -229,4 +229,14 @@ function hackathon_event_schema() {
 ];
   
   return $schema;
+}
+
+/**
+ * Implements hook_install()
+ */
+function hackathon_event_install() {
+  $config = \Drupal::service('config.factory')->getEditable('example.settings');
+  // Set and save new message value.
+  $config->set('message', 'Hi')->save();
+
 }

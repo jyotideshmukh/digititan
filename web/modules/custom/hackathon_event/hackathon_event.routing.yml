@@ -20,10 +20,9 @@ hackathon_event.page_visit_controller_recordVisit:
     _title: 'recordVisit'
   requirements:
     _permission: 'access content'
-hackathon_event.events_list:
-  path: '/event/list'
+hackathon_event.user_autocomplete:
+  path: '/hackathon_event/autocomplete'
   defaults:
-    _controller: '\Drupal\hackathon_event\Controller\HackathonEventController::list'
-    _title: 'events'
+    _controller: '\Drupal\hackathon_event\Controller\HackathonUserController::autocomplete'
   requirements:
     _permission: 'access content'

@@ -26,15 +26,16 @@ class HackathonUserController extends ControllerBase {
     if ($string) {
         $matches = array();
 
-        $ids = \Drupal::entityQuery('user')
-        ->condition('status', 1)
-        ->condition('roles', ['leader', 'developer'], 'IN')
-        ->execute();
-        $users = User::loadMultiple($ids);
+        // $ids = \Drupal::entityQuery('user')
+        // ->condition('status', 1)
+        // ->condition('roles', ['leader', 'developer'], 'IN')
+        // ->execute();
+        // $users = User::loadMultiple($ids);
+        $users = User::loadMultiple([1]);
 
 
-      foreach ($users as $user) {
-        $matches[] = ['value' => $row->nid->value, 'label' => $row->title->value];
+      foreach ($users as $user_data) {
+        $matches[] = ['value' => $user_data->getUsername() . " (".$user_data->id().")", 'label' => $user_data->getUsername()];
       }
     }
     return new JsonResponse($matches);

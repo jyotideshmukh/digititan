@@ -42,29 +42,9 @@ class HackathonEventController extends ControllerBase implements ContainerInject
    *   Return Hello string.
    */
   public function recordVisit() {
-    \Drupal::service('exela_csr.visitor_counter')->recordView();
+    \Drupal::service('hackathon_event.visitors')->recordView();
 
    return $response = new Response( 'Counter Incremented', Response::HTTP_OK, array('content-type' => 'text/html') ); 
-  }
-
-  public function show($eventid){
-
-  }
-
-   public function list(){
-
-     $database = \Drupal::database();
- $query = $database->select('hackathon_event', 'e');
- //$query->join('users','u')
-// Add extra detail to this query object: a condition, fields and a range.
-
-$query->fields('e', ['name', 'description', 'FROM_UNIXTIME(event_start_date) as e_startdate', 'FROM_UNIXTIME(event_end_date)', 'FROM_UNIXTIME(reg_start_date)', 'FROM_UNIXTIME(reg_end_date)']);
-$query->range(0, 50);
-$results = $query->execute();
-foreach($result as $result){
-  echo  $row->name, $row->description, $row->e_startdate;
-}
-
   }
 
 }
