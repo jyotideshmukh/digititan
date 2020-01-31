@@ -1,0 +1,6 @@
+manage event:
+  title: 'Add/Edit events'
+  description: 'Add or edit events'
+manage team:
+  title: 'Add/Edit team'
+  description: 'Add or edit teams'

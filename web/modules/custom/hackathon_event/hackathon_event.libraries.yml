@@ -1,0 +1,8 @@
+hackathon_event.visitors:
+  version: VERSION
+  js:
+    visitors.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings

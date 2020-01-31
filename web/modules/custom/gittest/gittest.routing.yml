@@ -1,0 +1,24 @@
+
+gittest.exela_git_controller_getRepo:
+  path: '/gittest/getRepo'
+  defaults:
+    _controller: '\Drupal\gittest\Controller\ExelaGitController::getRepo'
+    _title: 'All repos'
+  requirements:
+    _permission: 'access content'
+gittest.exela_git_controller_createRepo:
+  path: '/gittest/createRepo/{teamname}'
+  defaults:
+    _controller: '\Drupal\gittest\Controller\ExelaGitController::createRepo'
+    _title: 'Create repos'
+  teamname: ''
+  requirements:
+    _permission: 'access content'
+gittest.exela_git_controller_pullRepo:
+  path: '/gittest/pullRepo/{teamname}'
+  defaults:
+    _controller: '\Drupal\gittest\Controller\ExelaGitController::pullRepo'
+    _title: 'Create repos'
+  teamname: ''
+  requirements:
+    _permission: 'access content'

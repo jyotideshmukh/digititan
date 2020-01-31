@@ -1,0 +1,5 @@
+name: 'gittest'
+type: module
+description: 'This is for git testing'
+core: 8.x
+package: 'Custom'

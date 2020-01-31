@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Contains gittest.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function gittest_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the gittest module.
+    case 'help.page.gittest':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This is for git testing') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function gittest_theme() {
+  return [
+    'gittest' => [
+      'render element' => 'children',
+    ],
+  ];
+}

@@ -1,0 +1,5 @@
+name: 'Hackathon Event'
+type: module
+description: 'Modules contains information regarding to hackathon events and its componants'
+core: 8.x
+package: 'Hackathon'

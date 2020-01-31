@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * Contains hackathon_event.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function hackathon_event_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the hackathon_event module.
+    case 'help.page.hackathon_event':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Modules contains information regarding to hackathon events and its componants') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+function hackathon_event_page_attachments_alter(array &$attachments) {
+  $attachments['#attached']['library'][] = 'hackathon_event/hackathon_event.visitors';
+}

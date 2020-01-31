@@ -1,0 +1,232 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Hackathon module
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function hackathon_event_schema() {
+  $schema = array();
+  $schema['hackathon_event'] = [
+      'description' => 'Stores all event data',
+      'fields' => [
+          'event_id' => [
+              'description' => 'Primary key: Unique event id',
+              'type' => 'serial',
+              'not null' => true,
+              'unsigned' => false
+          ],
+          'name' => [
+              'description' => 'Event name',
+              'type' => 'varchar',
+            'length' => 255,
+            'not null' => true,
+            'default' => ''
+          ],
+          'description' => [
+            'description' => 'Event Description',
+            'type' => 'blob',
+            'not null' => false,
+              'size' => 'big'
+          ],
+          'event_start_date' => [
+            'description' => 'Event Start date',
+            'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => true,
+          ],
+          'event_end_date' => [
+              'description' => 'Event End date',
+              'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => true,
+          ],
+          'reg_start_date' => [
+            'description' => 'Registration Start date',
+            'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => true,
+          ],
+          'reg_end_date' => [
+              'description' => 'Registration End date',
+              'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => true,
+          ],
+          'rules_file' => [
+              'description' => 'Rules and Regulation file id',
+              'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => true
+          ],
+          'problem_statement_file' => [
+            'description' => 'Rules and Regulation file id',
+            'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => false
+          ],
+          'logo_file' => [
+            'description' => 'Logo file id',
+            'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => true
+          ],
+          'fee' => [
+              'description' => 'Event registration fee',
+              'type' => 'int',
+              'default' => 0
+            ],
+            'per_team_size' => [
+                'description' => 'maximum team size',
+                'type' => 'int',
+            'unsigned' => TRUE,
+            'default' => 0
+            ],
+            'event_teams' => [
+                'description' => 'Maximum number of teams can take part in event, for unlimited it will be 0.',
+                'type' => 'int',
+            'unsigned' => TRUE,
+            'default' => 0
+            ],
+            'status' => [
+                'description' => 'Status of Event i.e. 1 for active event',
+                'type' => 'int',
+            'unsigned' => TRUE,
+            'default' => 1
+            ],
+            'created' => [
+                'description' => 'Event created time',
+            'unsigned' => TRUE,
+            'type' => 'int',
+            ],
+            'created_by' => [
+                'description' => 'User id of Event created user',
+            'unsigned' => TRUE,
+            'type' => 'int',
+            ]
+      ],
+      'primary key' => ['event_id'],
+      'indexes' => [
+          'name' => ['name'],
+        ]
+  ];
+
+  $schema['hackathon_team'] = [
+      'description' => 'Contains information related to hackathon team',
+      'fields' => [
+        'team_id' => [
+            'description' => 'Primary key: Unique Team id',
+            'type' => 'serial',
+            'not null' => true,
+            'unsigned' => false
+        ],
+        'name' => [
+          'description' => 'Team name',
+          'type' => 'varchar',
+          'length' => 255,
+            'not null' => true,
+          'default' => ''
+        ],
+        'logo_file' => [
+          'description' => 'Logo file id',
+          'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => true
+        ],
+        'platform_account' => [
+            'description' => 'Platform account name',
+            'type' => 'varchar',
+          'length' => 255,
+            'not null' => true,
+          'default' => ''
+        ],
+        'platform_repository' => [
+            'description' => 'Platform Repository name',
+            'type' => 'varchar',
+          'length' => 255,
+            'not null' => true,
+          'default' => ''
+        ],
+        'event_id' => [
+            'description' => 'Unique indentifier: Event',
+            'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => TRUE,
+            'default' => 0,
+        ],
+        'leader_uid' => [
+            'description' => 'Leader user id',
+            'type' => 'int',
+            'unsigned' => TRUE,
+            'default' => 0
+          ],
+          'status' => [
+              'description' => 'Status of Team i.e. 1 for active team for active event',
+              'type' => 'int',
+            'unsigned' => TRUE,
+            'default' => 1
+          ],
+          'created' => [
+              'description' => 'Team created time',
+            'unsigned' => TRUE,
+            'type' => 'int',
+          ],
+          'created_by' => [
+              'description' => 'User id of team created user',
+            'unsigned' => TRUE,
+            'type' => 'int',
+          ]
+    ],
+    'primary key' => ['team_id'],
+    'indexes' => [
+        'name' => ['name'],
+        'leader_uid' => ['leader_uid'],
+    ],
+    'foreign keys' => [
+        'event_id' => [
+            'table' => 'hackathon_event',
+            'columns' => ['event_id' => 'event_id']
+        ]
+    ]
+  ];
+
+  $schema['hackathon_team_user'] = [
+    'description' => 'Contains relation between User and team',
+    'fields' => [
+        'uid' => [
+            'description' => 'Unique indentifier: User',
+            'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => TRUE,
+            'default' => 0,
+        ],
+        'team_id' => [
+            'description' => 'Unique indentifier: Team',
+            'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => TRUE,
+            'default' => 0,
+        ],
+  ],
+  'unique keys' => [
+    'team_user' => [
+        'team_id', 'uid'
+    ]
+  ],
+  'foreign keys' => [
+      'team_id' => [
+        'table' => 'hackathon_team',
+        'columns' => ['team_id' => 'team_id']
+      ],
+      'uid' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid']
+    ],
+  ],
+];
+  
+  return $schema;
+}

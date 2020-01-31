@@ -1,0 +1,4 @@
+services:
+  hackathon_event.visitors:
+    class: Drupal\hackathon_event\VisitorsDatabaseStorage
+    arguments: ['@database']

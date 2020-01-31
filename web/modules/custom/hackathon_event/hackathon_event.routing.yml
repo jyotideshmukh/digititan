@@ -1,0 +1,29 @@
+hackathon_event.hackathon_event_form:
+  path: '/hackathon/event'
+  defaults:
+    _form: '\Drupal\hackathon_event\Form\EventForm'
+    _title: 'EventForm'
+  requirements:
+    _permission: 'manage event'
+hackathon_event.hackathon_event_team_form:
+  path: '/hackathon/{event_id}/team'
+  defaults:
+    _form: '\Drupal\hackathon_event\Form\TeamForm'
+    _title: 'TeamForm'
+  event_id: 0
+  requirements:
+    _permission: 'manage team'
+hackathon_event.page_visit_controller_recordVisit:
+  path: '/recordVisit'
+  defaults:
+    _controller: '\Drupal\hackathon_event\Controller\HackathonEventController::recordVisit'
+    _title: 'recordVisit'
+  requirements:
+    _permission: 'access content'
+hackathon_event.events_list:
+  path: '/event/list'
+  defaults:
+    _controller: '\Drupal\hackathon_event\Controller\HackathonEventController::list'
+    _title: 'events'
+  requirements:
+    _permission: 'access content'

@@ -1,0 +1,13 @@
+{
+    "name": "gittest",
+    "type": "drupal-module",
+    "description": "This is for git testing",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/gittest",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/gittest",
+        "source": "http://cgit.drupalcode.org/gittest",
+    },
+}

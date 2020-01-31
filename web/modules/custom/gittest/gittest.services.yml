@@ -1,0 +1,4 @@
+services:
+  gittest.Gitservices:
+    class: Drupal\gittest\Controller\ExelaGitController
+    arguments: []
